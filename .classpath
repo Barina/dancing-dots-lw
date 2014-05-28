@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="D:/Documents/GoogleAdMobAdsSdkAndroid-6.4.1/GoogleAdMobAdsSdk-6.4.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Roy/Documents/Eclipse Workspaces/Android Workspace/DancingDotsLW/lib/GoogleAdMobAdsSdk-6.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/andengine.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/andenginelivewallpaperextension.jar"/>
 	<classpathentry kind="src" path="src"/>
