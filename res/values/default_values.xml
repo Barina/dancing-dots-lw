@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Default Settings -->
+    <integer name="default_gap">50</integer>
+    <integer name="default_radius">150</integer>
+
+    <color name="default_bgcolor">#118695</color>
+
+    <string name="default_drawshades">true</string>
+
+</resources>

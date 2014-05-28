@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Dancing Dots Live Wallpaper</string>
+    <string name="wallpaper_description">Cute Live Wallpaper with dots flying around interacting with your touch.</string>
+
+    <!-- Settings -->
+    <string name="shared_prefs_name">dancingdotslivewallpapersettings</string>
+    <string name="wallpaper_settings">Dancing Dots Settings</string>
+    <string name="gap_setting_name">Gap between dots</string>
+    <string name="gap_setting_summery">Represent the gap between dots.</string>
+    <string name="gap_setting_expended_summery">Represent the gap between dots.
+        also control the amount of apearing dots.
+        bigger value mean less dots.
+        value must be at least 25.</string>
+    <string name="radius_setting_name">Affected radius</string>
+    <string name="radius_setting_summery">The area affected by your finger touch.</string>
+    <string name="drawshades_title">Draw light shades</string>
+    <string name="drawshades_summery">Choose to show or hide light shades on the background.</string>
+
+    <!-- Settings Keys -->
+    <string name="key_radius_setting">radius_pref</string>
+    <string name="key_gap_setting">gap_pref</string>
+    <string name="key_bgcolor_setting">bgcolor_pref</string>
+    <string name="key_drawshades_setting">drawshades_pref</string>
+
+    <!-- Touch Input Setting -->
+
+
+    <!-- User Input Varifications -->
+    <string name="wrong_input">You enter wrong value.</string>
+    <string name="corrent_value">Correct value should be between 25 and</string>
+
+    <!-- Particle Colour Settings -->
+
+
+    <!-- Background Colour Settings -->
+
+</resources>

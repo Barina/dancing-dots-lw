@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="wallpaper_settings"
+    android:title="@string/wallpaper_settings" >
+
+    <PreferenceCategory
+        android:key="bg_settings"
+        android:title="Background" >
+        <yuku.ambilwarna.widget.AmbilWarnaPreference
+            android:defaultValue="0xff6699cc"
+            android:key="@string/key_bgcolor_setting"
+            android:title="Background color" />
+        <CheckBoxPreference android:title="@string/drawshades_title" android:key="@string/key_drawshades_setting" android:summary="@string/drawshades_summery" android:defaultValue="true"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="dots_settings"
+        android:title="Dots" >
+        <EditTextPreference
+            android:defaultValue="@integer/default_gap"
+            android:dialogMessage="@string/gap_setting_expended_summery"
+            android:key="@string/key_gap_setting"
+            android:summary="@string/gap_setting_summery"
+            android:title="@string/gap_setting_name" />
+        <EditTextPreference
+            android:defaultValue="@integer/default_radius"
+            android:dialogMessage="@string/radius_setting_summery"
+            android:key="@string/key_radius_setting"
+            android:summary="@string/radius_setting_summery"
+            android:title="@string/radius_setting_name" />
+    </PreferenceCategory>
+
+    <droid.barina.dotslw.AdPreference android:layout="@layout/ad_layout" />
+
+</PreferenceScreen>
