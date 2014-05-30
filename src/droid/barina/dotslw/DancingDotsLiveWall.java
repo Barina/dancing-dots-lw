@@ -11,8 +11,12 @@ import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.util.Log;
 import android.view.Display;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.WindowManager;
 import droid.barina.lwengine.Dot;
 import droid.barina.lwengine.LiveWallScene;
@@ -32,6 +36,7 @@ public class DancingDotsLiveWall extends BaseLiveWallpaperService
 	// ===========================================================
 	private LiveWallScene wallScene;
 	private SharedPreferences settings;
+	Camera mPortraitCamera, mLandscapeCamera;
 
 	// msg's...
 	// ===========================================================
@@ -73,9 +78,26 @@ public class DancingDotsLiveWall extends BaseLiveWallpaperService
 		SCREEN_WIDTH = display.getWidth();
 		SCREEN_HEIGHT = display.getHeight();
 		Camera mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+		
 		EngineOptions eo = new EngineOptions(true, ScreenOrientation.PORTRAIT, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);
 		eo.getRenderOptions().disableExtensionVertexBufferObjects();
 		return new org.anddev.andengine.engine.Engine(eo);
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig)
+	{
+		super.onConfigurationChanged(newConfig);
+		int orient = newConfig.orientation;
+		switch (orient)
+		{
+			case Configuration.ORIENTATION_PORTRAIT:
+				Log.d("", "screen orientation changed to portrait");
+				break;
+			case Configuration.ORIENTATION_LANDSCAPE:
+				Log.d("", "screen orientation changed to landscape");
+				break;
+		}
 	}
 
 	@Override
@@ -118,15 +140,18 @@ public class DancingDotsLiveWall extends BaseLiveWallpaperService
 	protected void onResume()
 	{
 		super.onResume();
-//		Map<String, ?> map = settings.getAll();
-//		Set<String> keys = map.keySet();
-//		Log.d("DancingDotsLiveWall", "======== list of keys and values from preference object: ========");
-//		for(String key : keys)
-//		{
-//			String value = map.get(key).toString();
-//			Log.d("DancingDotsLiveWall", key + " = " + value + " value is " + value.getClass());
-//		}
-//		Log.d("DancingDotsLiveWall", "=================================================================");
+		// Map<String, ?> map = settings.getAll();
+		// Set<String> keys = map.keySet();
+		// Log.d("DancingDotsLiveWall",
+		// "======== list of keys and values from preference object: ========");
+		// for(String key : keys)
+		// {
+		// String value = map.get(key).toString();
+		// Log.d("DancingDotsLiveWall", key + " = " + value + " value is " +
+		// value.getClass());
+		// }
+		// Log.d("DancingDotsLiveWall",
+		// "=================================================================");
 		int color = 0, gap = 0, radius = 0, def = 0;
 		color = settings.getInt(getString(R.string.key_bgcolor_setting), getResources().getColor(R.color.default_bgcolor));
 		def = getResources().getInteger(R.integer.default_gap);
