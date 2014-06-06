@@ -1,0 +1,15 @@
+
+syntax: regexp
+^bin$
+syntax: regexp
+^gen$
+syntax: regexp
+^bin$
+syntax: regexp
+^bin$
+syntax: regexp
+^bin$
+syntax: regexp
+^bin/dexedLibs$
+syntax: regexp
+^gen$
