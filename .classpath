@@ -3,7 +3,7 @@
 	<classpathentry exported="true" kind="lib" path="D:/Documents/Eclipse Workspaces/Android Workspace/DancingDotsLW/lib/GoogleAdMobAdsSdk-6.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/andenginelivewallpaperextension.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/andengine.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/ambilwarna.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/AmbilWarna.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
