@@ -12,8 +12,8 @@ public class Dot extends Entity
 {
 	public static TextureRegion TEXTURE_REGION;
 	private static Random random = new Random();
-	private final float initX, initY, maxVel;
-	private float velocityX, velocityY;
+	private final float initX, initY, maxVel, accelerate;
+	private float baseX, baseY, velocityX, velocityY;
 	private final Sprite sprite;
 
 	public Sprite getSprite()
@@ -28,9 +28,15 @@ public class Dot extends Entity
 
 	public Dot(float pX, float pY, float maxVel)
 	{
+		this(pX, pY, maxVel, 90);
+	}
+
+	public Dot(float pX, float pY, float maxVel, float accelerate)
+	{
 		super();
-		this.initX = pX;
-		this.initY = pY;
+		this.baseX = this.initX = pX;
+		this.baseY = this.initY = pY;
+		this.accelerate = accelerate;
 		this.maxVel = maxVel;
 		this.velocityX = this.maxVel * random.nextFloat();
 		this.velocityY = this.maxVel * random.nextFloat();
@@ -63,34 +69,157 @@ public class Dot extends Entity
 	@Override
 	protected void onManagedUpdate(float pSecondsElapsed)
 	{
-		float x = getSprite().getX();
-		float y = getSprite().getY();
-		if(x == this.initX && this.velocityX == 0 && y == this.initY && this.velocityY == 0)
-			return;
-		if(x > this.initX)
-			this.velocityX -= 90f * pSecondsElapsed;
+//		float x = getSprite().getX();
+//		float y = getSprite().getY();
+//		if(x == getBaseX() && this.velocityX == 0 && y == getBaseY() && this.velocityY == 0)
+//			return;
+//		if(x > getBaseX())
+//			this.velocityX -= 90f * pSecondsElapsed;
+//		else
+//			this.velocityX += 90f * pSecondsElapsed;
+//		if(y > getBaseY())
+//			this.velocityY -= 90f * pSecondsElapsed;
+//		else
+//			this.velocityY += 90f * pSecondsElapsed;
+//		if(this.velocityX > this.maxVel)
+//			this.velocityX = this.maxVel;
+//		else
+//			if(this.velocityX < -this.maxVel)
+//				this.velocityX = -this.maxVel;
+//		if(this.velocityY > this.maxVel)
+//			this.velocityY = this.maxVel;
+//		else
+//			if(this.velocityY < -this.maxVel)
+//				this.velocityY = -this.maxVel;
+//		getSprite().setVelocity(this.velocityX, this.velocityY);
+//		final float step = pSecondsElapsed;
+//		PointF delta = getDistanceFromBase();
+//		Vector2 velocity = getChaserEntity().getBody().getLinearVelocity();
+//		if(chaserCenterX() > chasedEntity.getCenter().x)
+//		{// Within every case dividing by the Delta calculated above.
+//			if(velocity.x > -(maxVelocity.x / delta.x))
+//				velocity.x -= step;
+//		}
+//		else
+//		{
+//			if(velocity.x < maxVelocity.x / delta.x)
+//				velocity.x += step;
+//		}
+//		if(chaserCenterY() > chasedEntity.getCenter().y)
+//		{
+//			if(velocity.y > -(maxVelocity.y / delta.y))
+//				velocity.y -= step;
+//		}
+//		else
+//		{
+//			if(velocity.y < maxVelocity.y / delta.y)
+//				velocity.y += step;
+//		}
+//		getChaserEntity().getBody().setLinearVelocity(velocity);
+		PointF delta = getDistanceMultiplierFromBase();
+		float x = getCenterX();
+		float y = getCenterY();
+		if(x >= getBaseX())
+		{
+			if(velocityX > -(maxVel / delta.x))
+				this.velocityX -= accelerate * pSecondsElapsed;
+		}
 		else
-			this.velocityX += 90f * pSecondsElapsed;
-		if(y > this.initY)
-			this.velocityY -= 90f * pSecondsElapsed;
+		{
+			if(velocityX < maxVel / delta.x)
+				this.velocityX += accelerate * pSecondsElapsed;
+		}
+		if(y >= getBaseY())
+		{
+			if(velocityY > -(maxVel / delta.y))
+				this.velocityY -= accelerate * pSecondsElapsed;
+		}
 		else
-			this.velocityY += 90f * pSecondsElapsed;
-		if(this.velocityX > this.maxVel)
-			this.velocityX = this.maxVel;
-		else
-			if(this.velocityX < -this.maxVel)
-				this.velocityX = -this.maxVel;
-		if(this.velocityY > this.maxVel)
-			this.velocityY = this.maxVel;
-		else
-			if(this.velocityY < -this.maxVel)
-				this.velocityY = -this.maxVel;
-		getSprite().setVelocity(this.velocityX, this.velocityY);
+		{
+			if(velocityY < maxVel / delta.y)
+				this.velocityY += accelerate * pSecondsElapsed;
+		}
+		getSprite().setVelocity(velocityX, velocityY);
+		//TODO: fix god damn stupid asshole Y velocity!!!
 	}
 
 	public void moveTo(float x, float y)
 	{
 		getSprite().setPosition(x, y);
+	}
+
+	public float getCenterX()
+	{
+		return getSprite().getX() + getSprite().getWidth() * .5f;
+	}
+
+	public float getCenterY()
+	{
+		return getSprite().getY() + getSprite().getHeight() * .5f;
+	}
+
+	public PointF getCenterPosition()
+	{
+		PointF center = new PointF();
+		center.x = getCenterX();
+		center.y = getCenterY();
+		return center;
+	}
+
+	public float getInitX()
+	{
+		return initX;
+	}
+
+	public float getInitY()
+	{
+		return initY;
+	}
+
+	public float getBaseX()
+	{
+		return baseX;
+	}
+
+	public void setBaseX(float baseX)
+	{
+		this.baseX = baseX;
+	}
+
+	public float getBaseY()
+	{
+		return baseY;
+	}
+
+	public void setBaseY(float baseY)
+	{
+		this.baseY = baseY;
+	}
+
+	public void resetBaseToInitialValues()
+	{
+		this.baseX = this.initX;
+		this.baseY = this.initY;
+	}
+
+	public PointF getDistanceMultiplierFromBase()
+	{
+		PointF dis = new PointF(), delta = new PointF();
+		// Retrieving distance per axis.
+		dis.x = Math.abs(getBaseX() - getSprite().getX());
+		dis.y = Math.abs(getBaseY() - getSprite().getY());
+		if(dis.x > dis.y)// Detect which is smaller then calculate its percents
+							// from the bigger distance
+		{
+			delta.x = 1;
+			delta.y = dis.x / dis.y;
+		}
+		else
+		{
+			delta.y = 1;
+			delta.x = dis.y / dis.x;
+		}
+		return delta;
 	}
 
 	/**
@@ -113,6 +242,6 @@ public class Dot extends Entity
 		// double m = (y2 - y1) / (x2 - x1);
 		double d = Math.sqrt((Math.pow(x1 - x2, 2)) + Math.pow(y1 - y2, 2));
 		PointF newPoint = new PointF((int)(x1 + ((distance / d) * (x2 - x1))), (int)(y1 + ((distance / d) * (y2 - y1))));
-		this.moveTo(newPoint.x, newPoint.y);;
+		this.moveTo(newPoint.x, newPoint.y);
 	}
 }

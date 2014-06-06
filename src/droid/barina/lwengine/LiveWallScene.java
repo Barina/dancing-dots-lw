@@ -10,13 +10,13 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import droid.barina.dotslw.DancingDotsLiveWall;
 import droid.barina.dotslw.DancingDotsLiveWallSettings;
 
 public class LiveWallScene extends Scene
 {
 	private static Sprite BG_SPRITE;
+	public final static String TAG = "LiveWallScene";
 
 	public static void LoadResources(Context context)
 	{
@@ -73,8 +73,8 @@ public class LiveWallScene extends Scene
 		{
 			for(int j = 0 ; j < height / gap ; j++)
 			{
-				Dot dot = new Dot(i * gap + gap * 0.5f, j * gap + gap * 0.5f, 20 + r.nextInt(20));
-				dot.moveTo(DancingDotsLiveWall.CAMERA_WIDTH * .5f + (-50 + r.nextInt(100)), DancingDotsLiveWall.CAMERA_HEIGHT * .5f + (-50 + r.nextInt(100)));
+				Dot dot = new Dot(i * gap + gap * 0.5f, j * gap + gap * 0.5f, 20 + r.nextInt(250), 50 + r.nextInt(90));
+				dot.moveTo(DancingDotsLiveWall.CAMERA_WIDTH * .5f, DancingDotsLiveWall.CAMERA_HEIGHT * .5f);
 				this.dots.add(dot);
 				getLayer(1).addEntity(dot.getSprite());
 				registerPostFrameHandler(dot);
@@ -89,6 +89,12 @@ public class LiveWallScene extends Scene
 		float[] rgb = DancingDotsLiveWallSettings.HSVtoRGB(hsv);
 		this.background = new ColorBackground(rgb[0], rgb[1], rgb[2]);
 		setBackground(this.background);
+	}
+
+	public void SetBackgroundPosition(float x, float y)
+	{
+		if(BG_SPRITE != null)
+			BG_SPRITE.setPosition(x, y);
 	}
 
 	public void Animate(float posX, float posY)
@@ -116,11 +122,19 @@ public class LiveWallScene extends Scene
 
 	public void setGap(int gap)
 	{
-		Log.d("LiveWallScene", "Old gap " + this.gap + " new gap " + gap);
 		if(this.gap != gap)
 		{
 			this.gap = gap;
 			RePopulateDots();
+		}
+	}
+
+	public void rebaseDotsPosition(float pX, float pY)
+	{
+		for(Dot dot : this.dots)
+		{
+			dot.setBaseX(pX + dot.getInitX());
+			dot.setBaseY(pY + dot.getInitY());
 		}
 	}
 

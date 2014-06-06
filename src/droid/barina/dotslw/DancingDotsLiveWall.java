@@ -9,19 +9,21 @@ import org.anddev.andengine.extension.ui.livewallpaper.BaseLiveWallpaperService;
 import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
+import org.anddev.andengine.opengl.view.RenderSurfaceView;
+import org.anddev.andengine.opengl.view.RenderSurfaceView.Renderer;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
-import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.WindowManager;
+import droid.barina.andengineforum.IOffsetsChanged;
 import droid.barina.lwengine.Dot;
 import droid.barina.lwengine.LiveWallScene;
 
-public class DancingDotsLiveWall extends BaseLiveWallpaperService
+public class DancingDotsLiveWall extends BaseLiveWallpaperService implements IOffsetsChanged
 {
 	// ===========================================================
 	// Constants
@@ -36,7 +38,7 @@ public class DancingDotsLiveWall extends BaseLiveWallpaperService
 	// ===========================================================
 	private LiveWallScene wallScene;
 	private SharedPreferences settings;
-	Camera mPortraitCamera, mLandscapeCamera;
+	Camera mCamera, mPortraitCamera, mLandscapeCamera;
 
 	// msg's...
 	// ===========================================================
@@ -77,11 +79,16 @@ public class DancingDotsLiveWall extends BaseLiveWallpaperService
 		Display display = wm.getDefaultDisplay();
 		SCREEN_WIDTH = display.getWidth();
 		SCREEN_HEIGHT = display.getHeight();
-		Camera mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-		
+		mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		EngineOptions eo = new EngineOptions(true, ScreenOrientation.PORTRAIT, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);
 		eo.getRenderOptions().disableExtensionVertexBufferObjects();
 		return new org.anddev.andengine.engine.Engine(eo);
+	}
+
+	@Override
+	public Engine onCreateEngine()
+	{
+		return new MyBaseWallpaperGLEngine(this);
 	}
 
 	@Override
@@ -131,7 +138,7 @@ public class DancingDotsLiveWall extends BaseLiveWallpaperService
 	{}
 
 	@Override
-	protected void onTap(final int pX, final int pY)
+	public void onTap(final int pX, final int pY)
 	{
 		getLiveWallScene().Animate(pX, pY);
 	}
@@ -176,10 +183,108 @@ public class DancingDotsLiveWall extends BaseLiveWallpaperService
 		getEngine().getTextureManager().unloadTexture(TEXTURE);
 		super.onDestroy();
 	}
+
 	// ===========================================================
 	// Methods
 	// ===========================================================
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
+	@Override
+	public void offsetsChanged(float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset, int yPixelOffset)
+	{
+		//TODO: fix overall position
+		if(mCamera != null)
+		{
+			// Emulator has 3 screens
+			mCamera.setCenter(((960 * xOffset) - 240), mCamera.getCenterY());
+			/*
+			 * formel mCamera.setCenter(( (Camera-WIDTH * (screensCount-1)) *
+			 * xOffset ) - (Camera-WIDTH / 2) ,mCamera.getCenterY() );
+			 */
+		}
+//		getLiveWallScene().SetBackgroundPosition(xPixelOffset, 0);
+		getLiveWallScene().rebaseDotsPosition(xPixelOffset, yPixelOffset);
+		Log.d(LiveWallScene.TAG, "offset params: xOffset = "+xOffset+
+				" yOffset = "+yOffset+
+				" xOffsetStep = "+xOffsetStep+
+				" yOffsetStep = "+yOffsetStep+ 
+				" xPixelOffset = "+xPixelOffset+
+				" yPixelOffset = "+yPixelOffset);
+	}
+
+	public class MyBaseWallpaperGLEngine extends GLEngine
+	{
+		// ===========================================================
+		// Fields
+		// ===========================================================
+		private Renderer mRenderer;
+		private IOffsetsChanged mOffsetsChangedListener = null;
+
+		// ===========================================================
+		// Constructors
+		// ===========================================================
+		public MyBaseWallpaperGLEngine(IOffsetsChanged pOffsetsChangedListener)
+		{
+			this.setEGLConfigChooser(false);
+			this.mRenderer = new RenderSurfaceView.Renderer(DancingDotsLiveWall.this.mEngine);
+			this.setRenderer(this.mRenderer);
+			this.setRenderMode(RENDERMODE_CONTINUOUSLY);
+			this.mOffsetsChangedListener = pOffsetsChangedListener;
+		}
+
+		// ===========================================================
+		// Methods for/from SuperClass/Interfaces
+		// ===========================================================
+		@Override
+		public Bundle onCommand(final String pAction, final int pX, final int pY, final int pZ, final Bundle pExtras, final boolean pResultRequested)
+		{
+			if(pAction.equals(WallpaperManager.COMMAND_TAP))
+			{
+				DancingDotsLiveWall.this.onTap(pX, pY);
+			}
+			else
+				if(pAction.equals(WallpaperManager.COMMAND_DROP))
+				{
+					DancingDotsLiveWall.this.onDrop(pX, pY);
+				}
+			return super.onCommand(pAction, pX, pY, pZ, pExtras, pResultRequested);
+		}
+
+		@Override
+		public void onResume()
+		{
+			super.onResume();
+			DancingDotsLiveWall.this.getEngine().onResume();
+			DancingDotsLiveWall.this.onResume();
+		}
+
+		@Override
+		public void onPause()
+		{
+			super.onPause();
+			DancingDotsLiveWall.this.getEngine().onPause();
+			DancingDotsLiveWall.this.onPause();
+		}
+
+		@Override
+		public void onDestroy()
+		{
+			super.onDestroy();
+			if(this.mRenderer != null)
+			{
+				// mRenderer.release();
+			}
+			this.mRenderer = null;
+		}
+
+		@Override
+		public void onOffsetsChanged(float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset, int yPixelOffset)
+		{
+			// TODO Auto-generated method stub
+			super.onOffsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset);
+			if(this.mOffsetsChangedListener != null)
+				this.mOffsetsChangedListener.offsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset);
+		}
+	}
 }
