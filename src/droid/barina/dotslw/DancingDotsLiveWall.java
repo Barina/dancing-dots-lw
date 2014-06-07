@@ -38,6 +38,7 @@ public class DancingDotsLiveWall extends BaseLiveWallpaperService implements IOf
 	// ===========================================================
 	private LiveWallScene wallScene;
 	private SharedPreferences settings;
+	private float targetPosition;
 	Camera mCamera, mPortraitCamera, mLandscapeCamera;
 
 	// msg's...
@@ -140,25 +141,13 @@ public class DancingDotsLiveWall extends BaseLiveWallpaperService implements IOf
 	@Override
 	public void onTap(final int pX, final int pY)
 	{
-		getLiveWallScene().Animate(pX, pY);
+		getLiveWallScene().Animate((targetPosition - CAMERA_WIDTH * .5f) + pX, pY);
 	}
 
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
-		// Map<String, ?> map = settings.getAll();
-		// Set<String> keys = map.keySet();
-		// Log.d("DancingDotsLiveWall",
-		// "======== list of keys and values from preference object: ========");
-		// for(String key : keys)
-		// {
-		// String value = map.get(key).toString();
-		// Log.d("DancingDotsLiveWall", key + " = " + value + " value is " +
-		// value.getClass());
-		// }
-		// Log.d("DancingDotsLiveWall",
-		// "=================================================================");
 		int color = 0, gap = 0, radius = 0, def = 0;
 		color = settings.getInt(getString(R.string.key_bgcolor_setting), getResources().getColor(R.color.default_bgcolor));
 		def = getResources().getInteger(R.integer.default_gap);
@@ -193,24 +182,21 @@ public class DancingDotsLiveWall extends BaseLiveWallpaperService implements IOf
 	@Override
 	public void offsetsChanged(float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset, int yPixelOffset)
 	{
-		//TODO: fix overall position
+		float screenCount = 1 / xOffsetStep + 1.0f;
+		float currentXPosition = (screenCount - 1) * xOffset;
+		targetPosition = CAMERA_WIDTH * .5f * currentXPosition;
+		Log.d(LiveWallScene.TAG, "screentcount = " + screenCount + " current = " + currentXPosition + " target = " + targetPosition);
 		if(mCamera != null)
 		{
 			// Emulator has 3 screens
-			mCamera.setCenter(((960 * xOffset) - 240), mCamera.getCenterY());
+			mCamera.setCenter(targetPosition, mCamera.getCenterY());
 			/*
 			 * formel mCamera.setCenter(( (Camera-WIDTH * (screensCount-1)) *
 			 * xOffset ) - (Camera-WIDTH / 2) ,mCamera.getCenterY() );
 			 */
 		}
-//		getLiveWallScene().SetBackgroundPosition(xPixelOffset, 0);
-		getLiveWallScene().rebaseDotsPosition(xPixelOffset, yPixelOffset);
-		Log.d(LiveWallScene.TAG, "offset params: xOffset = "+xOffset+
-				" yOffset = "+yOffset+
-				" xOffsetStep = "+xOffsetStep+
-				" yOffsetStep = "+yOffsetStep+ 
-				" xPixelOffset = "+xPixelOffset+
-				" yPixelOffset = "+yPixelOffset);
+		getLiveWallScene().SetBackgroundPosition(targetPosition - CAMERA_WIDTH * .5f, 0);
+		getLiveWallScene().rebaseDotsPosition(targetPosition - CAMERA_WIDTH * .5f, yPixelOffset);
 	}
 
 	public class MyBaseWallpaperGLEngine extends GLEngine

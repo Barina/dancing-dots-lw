@@ -61,61 +61,8 @@ public class Dot extends Entity
 	}
 
 	@Override
-	protected void onManagedDraw(GL10 arg0, Camera arg1)
-	{
-		// TODO Auto-generated method stub\
-	}
-
-	@Override
 	protected void onManagedUpdate(float pSecondsElapsed)
 	{
-//		float x = getSprite().getX();
-//		float y = getSprite().getY();
-//		if(x == getBaseX() && this.velocityX == 0 && y == getBaseY() && this.velocityY == 0)
-//			return;
-//		if(x > getBaseX())
-//			this.velocityX -= 90f * pSecondsElapsed;
-//		else
-//			this.velocityX += 90f * pSecondsElapsed;
-//		if(y > getBaseY())
-//			this.velocityY -= 90f * pSecondsElapsed;
-//		else
-//			this.velocityY += 90f * pSecondsElapsed;
-//		if(this.velocityX > this.maxVel)
-//			this.velocityX = this.maxVel;
-//		else
-//			if(this.velocityX < -this.maxVel)
-//				this.velocityX = -this.maxVel;
-//		if(this.velocityY > this.maxVel)
-//			this.velocityY = this.maxVel;
-//		else
-//			if(this.velocityY < -this.maxVel)
-//				this.velocityY = -this.maxVel;
-//		getSprite().setVelocity(this.velocityX, this.velocityY);
-//		final float step = pSecondsElapsed;
-//		PointF delta = getDistanceFromBase();
-//		Vector2 velocity = getChaserEntity().getBody().getLinearVelocity();
-//		if(chaserCenterX() > chasedEntity.getCenter().x)
-//		{// Within every case dividing by the Delta calculated above.
-//			if(velocity.x > -(maxVelocity.x / delta.x))
-//				velocity.x -= step;
-//		}
-//		else
-//		{
-//			if(velocity.x < maxVelocity.x / delta.x)
-//				velocity.x += step;
-//		}
-//		if(chaserCenterY() > chasedEntity.getCenter().y)
-//		{
-//			if(velocity.y > -(maxVelocity.y / delta.y))
-//				velocity.y -= step;
-//		}
-//		else
-//		{
-//			if(velocity.y < maxVelocity.y / delta.y)
-//				velocity.y += step;
-//		}
-//		getChaserEntity().getBody().setLinearVelocity(velocity);
 		PointF delta = getDistanceMultiplierFromBase();
 		float x = getCenterX();
 		float y = getCenterY();
@@ -125,22 +72,23 @@ public class Dot extends Entity
 				this.velocityX -= accelerate * pSecondsElapsed;
 		}
 		else
-		{
-			if(velocityX < maxVel / delta.x)
-				this.velocityX += accelerate * pSecondsElapsed;
-		}
+			if(x < getBaseX())
+			{
+				if(velocityX < maxVel / delta.x)
+					this.velocityX += accelerate * pSecondsElapsed;
+			}
 		if(y >= getBaseY())
 		{
 			if(velocityY > -(maxVel / delta.y))
 				this.velocityY -= accelerate * pSecondsElapsed;
 		}
 		else
-		{
-			if(velocityY < maxVel / delta.y)
-				this.velocityY += accelerate * pSecondsElapsed;
-		}
+			if(y < getBaseY())
+			{
+				if(velocityY < maxVel / delta.y)
+					this.velocityY += accelerate * pSecondsElapsed;
+			}
 		getSprite().setVelocity(velocityX, velocityY);
-		//TODO: fix god damn stupid asshole Y velocity!!!
 	}
 
 	public void moveTo(float x, float y)
@@ -243,5 +191,11 @@ public class Dot extends Entity
 		double d = Math.sqrt((Math.pow(x1 - x2, 2)) + Math.pow(y1 - y2, 2));
 		PointF newPoint = new PointF((int)(x1 + ((distance / d) * (x2 - x1))), (int)(y1 + ((distance / d) * (y2 - y1))));
 		this.moveTo(newPoint.x, newPoint.y);
+	}
+
+	@Override
+	protected void onManagedDraw(GL10 arg0, Camera arg1)
+	{
+		// TODO Auto-generated method stub
 	}
 }

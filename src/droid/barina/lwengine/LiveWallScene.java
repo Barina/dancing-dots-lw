@@ -73,7 +73,8 @@ public class LiveWallScene extends Scene
 		{
 			for(int j = 0 ; j < height / gap ; j++)
 			{
-				Dot dot = new Dot(i * gap + gap * 0.5f, j * gap + gap * 0.5f, 20 + r.nextInt(250), 50 + r.nextInt(90));
+				//Dot dot = new Dot(i * gap + gap * 0.5f, j * gap + gap * 0.5f, 20 + r.nextInt(250), 100 + r.nextInt(200));
+				Dot dot = new Dot(i * gap + gap * 0.5f, j * gap + gap * 0.5f, 30+r.nextInt(5), 60+r.nextInt(5));
 				dot.moveTo(DancingDotsLiveWall.CAMERA_WIDTH * .5f, DancingDotsLiveWall.CAMERA_HEIGHT * .5f);
 				this.dots.add(dot);
 				getLayer(1).addEntity(dot.getSprite());
